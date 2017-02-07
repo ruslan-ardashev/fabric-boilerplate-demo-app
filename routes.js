@@ -19,5 +19,7 @@ router.all('/api/*', authorize.verify);
 /* API ROUTES */
 router.use('/api/v1/thing', require('./api/v1/thing'));
 router.use('/api/v1/user', require('./api/v1/user'));
+router.use('/api/v1/mto', require('./api/v1/mto'));
+router.use('/api/v1/transfer', require('./api/v1/transfer'));
 
 module.exports = router;

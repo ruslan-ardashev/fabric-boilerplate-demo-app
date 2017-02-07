@@ -1,7 +1,79 @@
-<header-bar></header-bar>
+<header-bar>Header Bar Here</header-bar>
+
+<!-- old code -->
 <div class="master-overview">
     <div ng-repeat="thing in master.things" ng-click="master.openThing(thing.id)">
         {{thing.id}} - {{thing.description}}
     </div> 
 </div>
+
+<div id="main">
+	
+
+
+</div>
+
+<!-- accounts - create -->
+<label class="control-label">Accounts</label>
+<div class="form-accountsCreate">
+     <form ng-submit="master.accounts_create()">
+         <!-- <label for="userName" class="control-label">Accounts</label> -->
+
+         <!-- <div class="form-group" data-ng-class="{'has-warning has-feedback': login.invalidCredentials}">
+             <input type="text" id="userName" class="form-control" ng-model="credentials.userId"/>   
+             <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="login.invalidCredentials"></span>
+          </div>
+          <label for="inputPassword" class="control-label">Password</label>
+          <div class="form-group" data-ng-class="{'has-warning has-feedback': login.invalidCredentials}">
+              <input id="inputPassword" class="form-control" type="password" ng-model="credentials.password">
+              <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="login.invalidCredentials"></span>
+              <span class="help-block" data-ng-show="login.invalidCredentials">User ID and/or Password incorrect</span>
+          </div> -->
+
+          <button type="submit" id="login-button" class="btn btn-primary btn-md" ng-click="accounts_create();">
+               Create
+          </button>
+     </form>
+</div>
+
+<!-- accounts - add/remove -->
+<div class="form-accountsAddRemove">
+     <form ng-submit="master.accounts_addremove()">
+         <!-- <label for="userName" class="control-label">User ID</label>
+         <div class="form-group" data-ng-class="{'has-warning has-feedback': login.invalidCredentials}">
+             <input type="text" id="userName" class="form-control" ng-model="credentials.userId"/>   
+             <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="login.invalidCredentials"></span>
+          </div>
+          <label for="inputPassword" class="control-label">Password</label>
+          <div class="form-group" data-ng-class="{'has-warning has-feedback': login.invalidCredentials}">
+              <input id="inputPassword" class="form-control" type="password" ng-model="credentials.password">
+              <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="login.invalidCredentials"></span>
+              <span class="help-block" data-ng-show="login.invalidCredentials">User ID and/or Password incorrect</span>
+          </div> -->
+          <button type="submit" id="login-button" class="btn btn-primary btn-md">
+              Add or Remove Balances 
+          </button>
+     </form>
+</div>
+
+<!-- transfer -->
+<label class="control-label">Transfers</label>
+<div class="form-transfer">
+  <!-- <label for="userName" class="control-label">User ID</label>
+  <div class="form-group" data-ng-class="{'has-warning has-feedback': login.invalidCredentials}">
+     <input type="text" id="userName" class="form-control" ng-model="credentials.userId"/>   
+     <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="login.invalidCredentials"></span>
+  </div>
+  <label for="inputPassword" class="control-label">Password</label>
+  <div class="form-group" data-ng-class="{'has-warning has-feedback': login.invalidCredentials}">
+      <input id="inputPassword" class="form-control" type="password" ng-model="credentials.password">
+      <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="login.invalidCredentials"></span>
+      <span class="help-block" data-ng-show="login.invalidCredentials">User ID and/or Password incorrect</span>
+  </div> -->
+  <button ng-click="master.transfer()" id="login-button" class="btn btn-primary btn-md">
+      Transfer 
+  </button>
+</div>
+
+
 <footer-bar></footer-bar>

@@ -15,8 +15,9 @@ func main() {
 }
 
 var indexStrings = map[string]string{
-	"User":              "_users",
+	"User":             "_users",
     "Thing":             "_things",
+    "MTO":			"_mtos",
 }
 
 // Interface for saveable objects
@@ -40,6 +41,21 @@ type User struct {
 	Role         int64    `json:"role"`
 }
 
+// us
+type Account struct {
+	FirstName       	string `json:"firstName"`
+	LastName		 	string `json:"lastName"`
+	AccountNumber   	string `json:"accountNumber"`
+	Balance			string `json:"balance"`
+}
+
+type MTO struct {
+	Name            string `json:"name"`
+	Accounts		 []Account `json:"accounts"`
+}
+
+
+// funcs
 func (u User) GetId() string         { return u.Id }
 func (u User) SetId(id string)       { u.Id = id }
 func (u User) GetIdPrefix() string { return "u" }
@@ -121,5 +137,80 @@ func ResetIndexes(stub shim.ChaincodeStubInterface) error {
 		}
 		logger.Debugf("Delete with success from ledger: " + v)
 	}
+
+	// save MTOs initially here
+	var mtosKeyString = GetIndexString("MTO")
+	var mtos []MTO
+	var err error
+
+	// create sample MTOs and Banks here
+	var mto0 = MTO{
+		Name: "WesternUnion", 
+		Accounts: []Account{
+			{
+				FirstName: "Bob",
+				LastName: "Jenkins",
+				AccountNumber: "123",
+				Balance: "10000",
+			},
+			{
+				FirstName: "Bob",
+				LastName: "Leeroy",
+				AccountNumber: "1234",
+				Balance: "10000",
+			},
+		},
+	}
+
+	var mto1 = MTO{
+		Name: "CambodianExchange", 
+		Accounts: []Account{
+			{
+				FirstName: "Alice",
+				LastName: "Jenkins",
+				AccountNumber: "12345",
+				Balance: "10000",
+			},
+			{
+				FirstName: "Alice",
+				LastName: "Leeroy",
+				AccountNumber: "123456",
+				Balance: "10000",
+			},
+		},
+	}
+
+	var bank0 = MTO{
+		Name: "JPMorganChaseInternational", 
+		Accounts: []Account{
+			{
+				FirstName: "John",
+				LastName: "Jenkins",
+				AccountNumber: "1234567",
+				Balance: "10000",
+			},
+			{
+				FirstName: "John",
+				LastName: "Leeroy",
+				AccountNumber: "12345678",
+				Balance: "10000",
+			},
+		},
+	}
+
+	mtos = []MTO{
+		mto0, mto1, bank0,
+	}
+
+	logger.Infof("created first mtos: %v", mtos)
+
+	jsonMTOsAsBytes, _ := json.Marshal(mtos)
+
+	// store array into "_mtos"
+	err = stub.PutState(mtosKeyString, jsonMTOsAsBytes)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

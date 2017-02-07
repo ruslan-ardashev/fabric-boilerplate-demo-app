@@ -1,26 +1,37 @@
 {
 	"users":[
 		{
-			"id":"john1",
+			"id":"WesternUnion",
 			"password":"passw0rd",
-			"firstName":"John",
-			"lastName":"Doe",
+			"firstName":"Western",
+			"lastName":"Union",
 			"things":["12345678","87654321"],
-            "address": "Dam 1, 1012 JS Amsterdam, The Netherlands",
-            "phoneNumber": "0900 0048",
-            "emailAddress": "johndoe@gmail.com",
-            "role": 0
+            	"address": "Dam 1, 1012 JS Amsterdam, The Netherlands",
+            	"phoneNumber": "0900 0048",
+            	"emailAddress": "johndoe@gmail.com",
+            	"role": 0
 		},
 		{
-			"id":"jane1",
+			"id":"CambodianExchange",
 			"password":"passw0rd",
-			"firstName":"Jane",
-			"lastName":"Doe",
-			"things":["87654321"],
-            "address": "128 West 44th Street, New York, NY 10036, United States",
-            "phoneNumber": "0900 0024",
-            "emailAddress": "janedoe@gmail.com",
-            "role": 1
+			"firstName":"Cambodian",
+			"lastName":"Exchange",
+			"things":[""],
+            	"address": "Cambodia",
+            	"phoneNumber": "0900 0024 55098",
+            	"emailAddress": "cambodia@gmail.com",
+            	"role": 1
+		},
+		{	
+			"id":"JPMorganChaseInternational",
+			"password":"passw0rd",
+			"firstName":"JPMorgan",
+			"lastName":"Chase",
+			"things":[""],
+            	"address": "128 West 44th Street, New York, NY 10036, United States",
+            	"phoneNumber": "0900 0024",
+            	"emailAddress": "janedoe@gmail.com",
+            	"role": 1
 		}
 	],
 	"things":[

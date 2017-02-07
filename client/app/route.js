@@ -17,6 +17,16 @@ app.config(function ($routeProvider, $httpProvider) {
         }
     })
 
+    .when('/transfer', {
+        templateUrl: 'app/components/transfer/transfer.html',
+        controller: 'TransferController as transferCtrl',
+        resolve: {
+            mtos: function (ThingsService) {
+                return ThingsService.mtos();
+            }
+        }
+    })
+
     .when('/detail', {
         templateUrl: 'app/components/detail/detail.html',
         controller: 'DetailController as detail',

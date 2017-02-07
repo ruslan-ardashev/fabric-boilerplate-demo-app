@@ -32,6 +32,20 @@ app.service('ThingsService', ["$q", "$http", "$localStorage", function ($q, $htt
             });
 
             return deferred.promise;
+        },
+        mtos: function () {
+            var deferred = $q.defer();
+        
+            $http({
+                method: 'GET',
+                url: '/api/v1/mto',
+            }).then(function success(response) {
+                deferred.resolve(response.data);
+            }, function error(error) {
+                deferred.reject(error);
+            });
+
+            return deferred.promise;            
         }
 
     }

@@ -16,6 +16,7 @@ var Functions = map[string]func(shim.ChaincodeStubInterface,[]string)([]byte, er
     "get_user": get_user,
     "get_thing": get_thing,
     "get_all_things": get_all_things,
+    "mtos": mtos,
 }
 
 //=================================================================================================================================
@@ -111,4 +112,25 @@ func get_all_things(stub shim.ChaincodeStubInterface, args []string) ([]byte, er
 		result = append(result, obj)
 	}
 	return json.Marshal(result)
+}
+
+func mtos(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	
+	var mtoKeyString = data.GetIndexString("MTO")
+	var mtos []data.MTO
+	returnMtos := []string{}
+
+	err := utils.Get(stub, &mtos, mtoKeyString)
+
+	if err != nil {
+		return nil, errors.New("{\"Error\":\"Failed to get mtos for mtosKeyString.\"}")
+	}
+
+	// // find mto with given name
+	for i := 0; i < len(mtos); i++ {
+		returnMtos = append(returnMtos, mtos[i].Name)
+	}
+
+	return json.Marshal(returnMtos)
+
 }

@@ -1,0 +1,62 @@
+<header-bar>Header Bar Here</header-bar>
+
+<!-- old code -->
+<!-- <div class="master-overview">
+    <div ng-repeat="thing in master.things" ng-click="master.openThing(thing.id)">
+        {{thing.id}} - {{thing.description}}
+    </div> 
+</div> -->
+
+<!-- transfer -->
+<label class="control-label">Transfers</label>
+<div id="main">
+
+  <br/>
+
+  <div class="row">
+
+            <div class="form-transfer">
+
+            	<!-- select MTO -->
+            	<label class="control-label">Destination MTO</label>
+           	<select ng-model='transferCtrl.selectedMTO' ng-options='mto for mto in transferCtrl.mtos'></select>
+
+               <form ng-submit="transferCtrl.transfer(transferDetails)">
+
+                	<!-- source account # -->
+                    <label for="sourceAccountNumber" class="control-label">Source Account #</label>
+                    <div class="form-group" data-ng-class="{'has-warning has-feedback': transferCtrl.invalidTransfer}">
+                        <input type="text" id="sourceAccountNumber" class="form-control" ng-model="transferDetails.sourceAccountNumber"/>   
+                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="transferCtrl.invalidTransfer"></span>
+                    </div>
+
+                    <!-- destination account # -->
+				<label for="destinationAccountNumber" class="control-label">Destination Account #</label>
+                    <div class="form-group" data-ng-class="{'has-warning has-feedback': transferCtrl.invalidTransfer}">
+                        <input type="text" id="destinationAccountNumber" class="form-control" ng-model="transferDetails.destinationAccountNumber"/>   
+                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="transferCtrl.invalidTransfer"></span>
+                    </div>
+
+                    <!-- amount -->
+                    <label for="amount" class="control-label">Amount ($,USD)</label>
+                    <div class="form-group" data-ng-class="{'has-warning has-feedback': transferCtrl.invalidCredentials}">
+                        <input id="amount" class="form-control" type="amount" ng-model="transferDetails.amount">
+                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="transferCtrl.invalidTransfer"></span>
+                        <span class="help-block" data-ng-show="transferCtrl.invalidTransfer">Invalid Transfer - Account Number Mismatch or Insufficient Balance</span>
+                    </div>
+                    
+                    <button type="submit" id="login-button" class="btn btn-primary btn-md">
+                        Send Money
+                    </button>
+
+               </form>
+
+            </div>
+
+        <spinner data-ng-show="login.showAuthenticatingSpinner"></spinner>
+
+    </div>
+
+</div>
+
+<footer-bar></footer-bar>
