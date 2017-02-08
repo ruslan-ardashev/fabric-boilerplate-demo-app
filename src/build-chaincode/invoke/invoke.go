@@ -4,6 +4,7 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"encoding/json"
 	"build-chaincode/data"
+	"build-chaincode/utils"
 	"strconv"
 )
 
@@ -41,7 +42,83 @@ func Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([
 func Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	logger.Infof("Deployed chaincode.")
 
-	return nil, data.ResetIndexes(stub)
+	data.ResetIndexes(stub)
+
+	// save MTOs initially here
+	var mtosKeyString = data.GetIndexString("MTO")
+	var mtos []data.MTO
+	var err error
+
+	// create sample MTOs and Banks here
+	var mto0 = data.MTO{
+		Name: "WesternUnion", 
+		Accounts: []data.Account{
+			{
+				FirstName: "Bob",
+				LastName: "Jenkins",
+				AccountNumber: "123",
+				Balance: "10000",
+			},
+			{
+				FirstName: "Bob",
+				LastName: "Leeroy",
+				AccountNumber: "1234",
+				Balance: "10000",
+			},
+		},
+	}
+
+	var mto1 = data.MTO{
+		Name: "CambodianExchange", 
+		Accounts: []data.Account{
+			{
+				FirstName: "Alice",
+				LastName: "Jenkins",
+				AccountNumber: "12345",
+				Balance: "10000",
+			},
+			{
+				FirstName: "Alice",
+				LastName: "Leeroy",
+				AccountNumber: "123456",
+				Balance: "10000",
+			},
+		},
+	}
+
+	var bank0 = data.MTO{
+		Name: "JPMorganChaseInternational", 
+		Accounts: []data.Account{
+			{
+				FirstName: "John",
+				LastName: "Jenkins",
+				AccountNumber: "1234567",
+				Balance: "10000",
+			},
+			{
+				FirstName: "John",
+				LastName: "Leeroy",
+				AccountNumber: "12345678",
+				Balance: "10000",
+			},
+		},
+	}
+
+	mtos = []data.MTO{
+		mto0, mto1, bank0,
+	}
+
+	logger.Infof("created first mtos: %v", mtos)
+
+	jsonMTOsAsBytes, _ := json.Marshal(mtos)
+
+	// store array into "_mtos"
+	err = stub.PutState(mtosKeyString, jsonMTOsAsBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
 }
 
 //==============================================================================================================================
@@ -116,26 +193,25 @@ func createAccount(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 // if successful, add functionality to return new balances as strings [source balance, destination balance]
 func transfer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
+	logger.Infof("~~ Invoking transfer ~~")
+
+	var mtoKeyString = data.GetIndexString("MTO")
+	var mtos []data.MTO
+
+	err := utils.Get(stub, &mtos, mtoKeyString)
+
+	if err != nil {
+		return nil, errors.New("{\"Error\":\"Failed to get mtos for mtosKeyString.\"}")
+	}
+
 	// ecert, err := stub.GetState(name)
 	// if err != nil { return nil, errors.New("Couldn't retrieve ecert for user " + name) }
-
-	var mtosKeyString = data.GetIndexString("MTO")
-	var mtos []data.MTO
-	var err error
 
 	var sourceMTOName = args[0]
 	var sourceAccountNumber = args[1]
 	var balanceToTransfer = args[2]
 	var destinationMTOName = args[3]
 	var destinationAccountNumber = args[4]
-
-	mtosAsBytes, err := stub.GetState(mtosKeyString)
-
-	if err != nil {
-		return nil, errors.New("{\"Error\":\"Failed to get mtos for mtosKeyString.\"}")
-	}
-
-	json.Unmarshal(mtosAsBytes, &mtos)
 
 	// // find MTOs to transfer between
 	sourceIndex := -1
@@ -217,15 +293,18 @@ func transfer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	mtos[destinationIndex].Accounts[destinationAccountIndex].Balance = destinationBalanceString
 
 	// store mtos back in KVS
-	mtosAsBytes, _ = json.Marshal(mtos)
+	mtosAsBytes, _ := json.Marshal(mtos)
 
-	err = stub.PutState(mtosKeyString, mtosAsBytes)
+	err = stub.PutState(mtoKeyString, mtosAsBytes)
+
 	if err != nil {
 		return nil, err
 	}
 
 	// only reach if success
 	returnBalances := []string{sourceBalanceString, destinationBalanceString}
+
+	logger.Infof("~~ Completing invoking transfer ~~")
 
 	return json.Marshal(returnBalances)
 

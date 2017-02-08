@@ -32,6 +32,8 @@ exports.invoke = function(functionName, args, enrollmentId){
         });
 
         blockchain.invoke(functionName, args, enrollmentId, function(err, results){
+            logger.log("invoking with functionName, args, enrollmentId:");
+            logger.log(functionName + ", " + args + ", " + enrollmentId);
             if(err) {reject(err)}
             else {resolve(results)}
         });

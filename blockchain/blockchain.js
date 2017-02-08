@@ -269,6 +269,8 @@ exports.invoke = function (fcn, args, enrollmentId, cb) {
             args: args
         };
 
+        logger.debug("[SDK] invokeRequest being started - " + invokeRequest.chaincodeID + ", " + fcn + ", " + args);
+
         // Invoke the request from the user object.
         var tx = user.invoke(invokeRequest);
 
@@ -276,6 +278,7 @@ exports.invoke = function (fcn, args, enrollmentId, cb) {
             logger.debug("[SDK] "+ enrollmentId +" submitted invoke function "+ fcn, args[0]);
         });
         tx.on("complete", function(results) {
+            logger.debug("[SDK] "+ enrollmentId +" completed invoke function "+ fcn, args[0]);
             cb(null, results);
         });
         tx.on("error", function(err) {
