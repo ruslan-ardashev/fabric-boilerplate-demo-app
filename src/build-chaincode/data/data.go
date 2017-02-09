@@ -41,19 +41,6 @@ type User struct {
 	Role         int64    `json:"role"`
 }
 
-// us
-type Account struct {
-	FirstName       	string `json:"firstName"`
-	LastName		 	string `json:"lastName"`
-	AccountNumber   	string `json:"accountNumber"`
-	Balance			string `json:"balance"`
-}
-
-type MTO struct {
-	Name            string `json:"name"`
-	Accounts		 []Account `json:"accounts"`
-}
-
 
 // funcs
 func (u User) GetId() string         { return u.Id }
