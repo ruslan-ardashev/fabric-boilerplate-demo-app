@@ -1,9 +1,15 @@
-app.controller("TransferController", ["mtos", "$localStorage", "TransferService", "$location", function (mtos, $localStorage, TransferService, $location) {
+app.controller("TransferController", ["mtos", "$scope", "$localStorage", "TransferService", "$location", function (mtos, $scope, $localStorage, TransferService, $location) {
 
     var vm = this;
 
     vm.mtos = mtos;
     vm.selectedMTO = mtos[0];
+
+    vm.mtoDetails = {};
+
+    vm.sayHi = function() {
+        console.log("~~~~~~~~~~~~HI~~~~~~~~~~~~~");
+    }
 
     // $localStorage.mtos = mtos;
     // $localStorage.selectedMTO = $localStorage.mtos[0];
@@ -71,6 +77,8 @@ app.controller("TransferController", ["mtos", "$localStorage", "TransferService"
                         function (result) {
                             console.log("afterTransfer success still new to promises:");
                             console.log(result);
+                            $scope.transferCtrl.mtoDetails = result;
+                            $scope.transferCtrl.sayHi();
                         },
                         function (error) {
                             console.log("afterTransfer error still new to promises:");
