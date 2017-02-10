@@ -17,35 +17,72 @@
 
             <div class="form-create">
 
-               <form ng-submit="create.create(accountDetails)">
+               <form ng-submit="createCtrl.create(createDetails)">
 
-                  <!-- source account # -->
-                    <label for="sourceAccountNumber" class="control-label">Source Account #</label>
-                    <div class="form-group" data-ng-class="{'has-warning has-feedback': transferCtrl.invalidTransfer}">
-                        <input type="text" id="sourceAccountNumber" class="form-control" ng-model="transferDetails.sourceAccountNumber"/>   
-                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="transferCtrl.invalidTransfer"></span>
+                    <!-- firstName -->
+                    <label for="firstName" class="control-label">firstName</label>
+                    <div class="form-group" data-ng-class="{'has-warning has-feedback': createCtrl.invalidTransfer}">
+                        <input type="text" id="firstName" class="form-control" ng-model="createDetails.firstName"/>   
+                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="createCtrl.invalidTransfer"></span>
                     </div>
 
-                    <!-- destination account # -->
-        <label for="destinationAccountNumber" class="control-label">Destination Account #</label>
-                    <div class="form-group" data-ng-class="{'has-warning has-feedback': transferCtrl.invalidTransfer}">
-                        <input type="text" id="destinationAccountNumber" class="form-control" ng-model="transferDetails.destinationAccountNumber"/>   
-                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="transferCtrl.invalidTransfer"></span>
+                    <!-- lastName -->
+                    <label for="lastName" class="control-label">lastName</label>
+                    <div class="form-group" data-ng-class="{'has-warning has-feedback': createCtrl.invalidTransfer}">
+                        <input type="text" id="lastName" class="form-control" ng-model="createDetails.lastName"/>   
+                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="createCtrl.invalidTransfer"></span>
                     </div>
 
-                    <!-- amount -->
-                    <label for="amount" class="control-label">Amount ($,USD)</label>
-                    <div class="form-group" data-ng-class="{'has-warning has-feedback': transferCtrl.invalidCredentials}">
-                        <input id="amount" class="form-control" type="amount" ng-model="transferDetails.amount">
-                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="transferCtrl.invalidTransfer"></span>
-                        <span class="help-block" data-ng-show="transferCtrl.invalidTransfer">Invalid Transfer - Account Number Mismatch or Insufficient Balance</span>
+                    <!-- accountNumber -->
+                    <label for="accountNumber" class="control-label">accountNumber</label>
+                    <div class="form-group" data-ng-class="{'has-warning has-feedback': createCtrl.invalidTransfer}">
+                        <input type="text" id="accountNumber" class="form-control" ng-model="createDetails.accountNumber"/>   
+                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="createCtrl.invalidTransfer"></span>
+                    </div>
+
+                    <!-- balance -->
+                    <label for="balance" class="control-label">Amount ($,USD)</label>
+                    <div class="form-group" data-ng-class="{'has-warning has-feedback': createCtrl.invalidCredentials}">
+                        <input id="balance" class="form-control" type="balance" ng-model="createDetails.balance">
+                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="createCtrl.invalidTransfer"></span>
+                        <span class="help-block" data-ng-show="createCtrl.invalidTransfer">Invalid Transfer - Account Number Mismatch or Insufficient Balance</span>
                     </div>
                     
                     <button type="submit" id="login-button" class="btn btn-primary btn-md">
-                        Send Money
+                        Confirm Create
                     </button>
 
                </form>
+
+            </div>
+
+            <div class="afterMethodArea">
+
+                <table style="text-align: center; border: 1px, solid, grey; padding: 5px;">
+
+                    <tr>
+
+                        <th>Account Number</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Balance (USD)</th>
+
+                    </tr>
+
+                    <tbody ng-repeat="mto in createCtrl.mtoDetails">
+
+                        <tr colspan="4"><td>{{ mto.name }}</td></tr>
+
+                        <tr ng-repeat="account in mto.accounts">
+                            <td>{{ account.accountNumber }}</td>
+                            <td>{{ account.firstName }}</td>
+                            <td>{{ account.lastName }}</td>
+                            <td>{{ account.balance }}</td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
 
             </div>
 

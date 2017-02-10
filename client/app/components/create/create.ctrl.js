@@ -1,20 +1,26 @@
-app.controller("CreateController", ["$localStorage", "CreateService", "$location", function ($localStorage, CreateService, $location) {
+app.controller("CreateController", ["$scope", "$localStorage", "CreateService", "$location", function ($scope, $localStorage, CreateService, $location) {
 
     var vm = this;
 
     vm.invalidTransfer = false;
     vm.showTransferSpinner = false;
 
-    vm.create = function(accountDetails) {
+    vm.mtoDetails = {};
+
+    vm.sayHi = function() {
+        console.log("~~~~~~~~~~~~HI~~~~~~~~~~~~~");
+    }
+
+    vm.create = function(createDetails) {
 
         console.log("~~user~~");
         console.log($localStorage.user.id);        
 
         // insert source MTO from logged in identity, selected destination MTO
-        accountDetails.mto = $localStorage.user.id
+        createDetails.mto = $localStorage.user.id
 
-        console.log("~~accountDetails~~");
-        console.log(accountDetails);
+        console.log("~~createDetails~~");
+        console.log(createDetails);
 
         vm.showTransferSpinner = true;
 
@@ -32,9 +38,9 @@ app.controller("CreateController", ["$localStorage", "CreateService", "$location
         // accountNumber: accountDetails.accountNumber, 
         // balance: accountDetails.balance
 
-        CreateService.create(accountDetails)
+        CreateService.create(createDetails)
             .then(function (result) {
-                console.log("Returning trasfer result: ")
+                console.log("Returning create result: ")
                 console.log(result);
                 if (!result) {
                     console.log("no result but no error");
@@ -53,6 +59,7 @@ app.controller("CreateController", ["$localStorage", "CreateService", "$location
                     // delete $localStorage.selectedThing;
 
                     // $location.path("/master");
+                    
 
                 } else {
                     console.log("result, no result.successful, other result fields present though");
@@ -66,7 +73,29 @@ app.controller("CreateController", ["$localStorage", "CreateService", "$location
                 // vm.showTransferringSpinner = false;
                 // vm.invalidTransaction = true;
 
-            });
+            })
+            .then(
+                function (result) {
+                    console.log("notSure success still new to promises:");
+                    CreateService.afterCreate()
+                    .then( 
+                        function (result) {
+                            console.log("afterCreate success still new to promises:");
+                            console.log(result);
+                            $scope.createCtrl.mtoDetails = result;
+                            $scope.createCtrl.sayHi();
+                        },
+                        function (error) {
+                            console.log("afterTransfer error still new to promises:");
+                            console.log(error);
+                        }
+                    );
+                }, 
+                function (error) {
+                    console.log("notSure error still new to promises:");
+                    console.log(error);
+                }
+            );
     }
     
 }]);

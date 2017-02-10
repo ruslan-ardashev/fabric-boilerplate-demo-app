@@ -27,6 +27,11 @@ app.config(function ($routeProvider, $httpProvider) {
         }
     })
 
+    .when('/create', {
+        templateUrl: 'app/components/create/create.html',
+        controller: 'CreateController as createCtrl',
+    })
+
     .when('/detail', {
         templateUrl: 'app/components/detail/detail.html',
         controller: 'DetailController as detail',

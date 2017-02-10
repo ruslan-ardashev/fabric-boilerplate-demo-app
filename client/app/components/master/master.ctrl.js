@@ -10,9 +10,9 @@ app.controller("MasterController", ["things", "$localStorage", "$location", func
         $location.path('/detail');
     }
 
-    vm.accounts_create = function() {
+    vm.create = function() {
     		console.log("selected accounts create!");
-    		// $location.path("/");
+    		$location.path("/create");
     }
 
     vm.accounts_addremove = function() {
