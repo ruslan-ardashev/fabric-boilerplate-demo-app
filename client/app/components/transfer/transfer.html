@@ -19,7 +19,7 @@
 
             	<!-- select MTO -->
             	<label class="control-label">Destination MTO</label>
-           	<select ng-model='transferCtrl.selectedMTO' ng-options='mto for mto in transferCtrl.mtos'></select>
+               	<select ng-model='transferCtrl.selectedMTO' ng-options='mto for mto in transferCtrl.mtos'></select>
 
                <form ng-submit="transferCtrl.transfer(transferDetails)">
 
@@ -50,6 +50,12 @@
                     </button>
 
                </form>
+
+            </div>
+
+            <div class="afterMethodArea">
+
+                
 
             </div>
 

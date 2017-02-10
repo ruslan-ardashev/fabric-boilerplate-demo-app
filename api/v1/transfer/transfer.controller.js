@@ -47,6 +47,49 @@ exports.transfer = function(req, res) {
 };
 
 /*
+    After transfer
+
+    METHOD: POST
+    URL : /api/v1/transfer
+    Arguments:
+        // taken directly from chaincode
+        // arg0 - (Source MTO).Name
+        // arg1 - (Source account).Number
+        // arg2 - balance to transfer from source account
+        // arg3 - (Destination MTO).Name
+        // arg4 - (Destination account).Number
+    Response:
+        []
+*/
+exports.afterTransfer = function(req, res) {
+    console.log("-- Calling AfterTransfer from api-v1-transfer-after --");
+
+    var body = req.body;
+
+    console.log("~~req~~");
+    console.log(body);
+    console.log("~~ENDreq~~");
+
+    const functionName = "afterTransfer";
+    const args = [ ];
+
+    console.log("afterTransfer req: " + req);
+    console.log("passed args: " + args);
+
+    BlockchainService.query(functionName,args,req.userId).then(function(result){
+        if (!result) {
+            res.json([]);
+        } else {
+            // console.log("Retrieved things from the blockchain: # " + result);
+            res.json(result)
+        }
+    }).catch(function(err){
+        console.log("Error", err);
+        res.sendStatus(500);   
+    }); 
+};
+
+/*
     Retrieve thing object
 
     METHOD: GET

@@ -6,7 +6,6 @@ import (
 	"build-chaincode/query"
 	"build-chaincode/invoke"
 	"github.com/pkg/errors"
-	"fmt"
 	"encoding/json"
 	"strconv"
 )
@@ -30,7 +29,7 @@ var mtoIndexString = "_mtos"
 var logger = shim.NewLogger("fabric-boilerplate")
 
 // Init - is called when the chaincode is deployed
-func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	logger.Infof("~~ Running the Init we want. ~~")
 	bytes, err := invoke.Init(stub, function, args)
 	if err != nil { logger.Errorf("Error invoking Init: %v \n %v", function, err) }
@@ -113,9 +112,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, args []string) 
 
 // Invoke - handles all the invoke functions
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-	if function == "init" {
-		return t.Init(stub, args)
-	} else if function == "createAccount" {
+	if function == "createAccount" {
 		logger.Infof("~~ Running the createAccount we want. ~~")
 		return t.createAccount(stub, args)
 	} else if function == "transfer" {
@@ -231,15 +228,23 @@ func (t *SimpleChaincode) transfer(stub shim.ChaincodeStubInterface, args []stri
 	sourceIndex := -1
 	destinationIndex := -1
 	for i := 0; i < len(mtos); i++ {
+
 		if mtos[i].Name == sourceMTOName {
+			logger.Infof("~~ found sourceIndex at %v ~~", i)
 			sourceIndex = i
-		} else if mtos[i].Name == destinationMTOName {
+		}
+
+		// support both ifs, not a bug
+		// transfers between accounts at self MTO
+		if mtos[i].Name == destinationMTOName {
+			logger.Infof("~~ found destinationIndex at %v ~~", i)
 			destinationIndex = i
 		} 
+
 	}
 
 	if (sourceIndex == -1) || (destinationIndex == -1) {
-		logger.Infof("~~ Failed to get both MTOs to transfer between. ~~")
+		logger.Infof("~~ Failed to find both source and destination MTO. ~~")
 		return nil, errors.New("{\"Error\":\"Failed to get both MTOs to transfer between.\"}")
 	}
 
@@ -249,15 +254,19 @@ func (t *SimpleChaincode) transfer(stub shim.ChaincodeStubInterface, args []stri
 
 	for i := 0; i < len(sourceMTOAccounts); i++ {
 		if sourceMTOAccounts[i].AccountNumber == sourceAccountNumber {
+			logger.Infof("~~ found sourceAccountIndex at %v ~~", i)
 			sourceAccountIndex = i
 		}
 	}
 
 	if sourceAccountIndex == -1 {
+		logger.Infof("~~ Failed to get source MTO account given specified account number. ~~")
 		return nil, errors.New("{\"Error\":\"Failed to get source MTO account given specified account number.\"}")
 	}
 
 	var sourceAccount = sourceMTOAccounts[sourceAccountIndex]
+
+	logger.Infof("~~ got source account. index %v ~~", sourceAccountIndex)
 
 	// get account with number from destination
 	var destinationMTOAccounts = mtos[destinationIndex].Accounts
@@ -270,27 +279,39 @@ func (t *SimpleChaincode) transfer(stub shim.ChaincodeStubInterface, args []stri
 	}
 
 	if destinationAccountIndex == -1 {
+		logger.Infof("~~ Failed to get destination MTO account given specified account number. ~~")
 		return nil, errors.New("{\"Error\":\"Failed to get destination MTO account given specified account number.\"}")
 	}
 
 	var destinationAccount = destinationMTOAccounts[destinationAccountIndex]
+
+	logger.Infof("~~ got destination account. index %v ~~", destinationAccountIndex)
 
 	// get balances from source, destination, args
 	sourceBalance, err0 := strconv.ParseFloat(sourceAccount.Balance, 64)
 	destinationBalance, err1 := strconv.ParseFloat(destinationAccount.Balance, 64)
 	balanceToTransferFloat, err2 := strconv.ParseFloat(balanceToTransfer, 64)
 
+	logger.Infof("~~ sourceBalance: %v ~~", sourceBalance)
+	logger.Infof("~~ destinationBalance: %v ~~", destinationBalance)
+	logger.Infof("~~ balanceToTransferFloat: %v ~~", balanceToTransferFloat)
+
 	// check for errors in conversion
 	if err0 != nil {
+		logger.Infof("~~ failed parsing sourceBalance ~~")
 		return nil, err0
 	} else if err1 != nil {
+		logger.Infof("~~ failed parsing destinationBalance ~~")
 		return nil, err1
 	} else if err2 != nil {
+		logger.Infof("~~ failed parsing balanceToTransferFloat ~~")
 		return nil, err2
 	}
 
 	// check for sufficient balance in sourceBalance
 	var resultingSourceBalance = sourceBalance - balanceToTransferFloat
+
+	logger.Infof("~~ resultingSourceBalance: %v ~~", resultingSourceBalance)
 
 	if resultingSourceBalance < 0 {
 		logger.Infof("~~ Insufficient source funds to initiate transfer. ~~")
@@ -301,12 +322,20 @@ func (t *SimpleChaincode) transfer(stub shim.ChaincodeStubInterface, args []stri
 	sourceBalance = sourceBalance - balanceToTransferFloat
 	destinationBalance = destinationBalance + balanceToTransferFloat
 
+	logger.Infof("~~ new sourceBalance: %v ~~", sourceBalance)
+	logger.Infof("~~ new destinationBalance: %v ~~", destinationBalance)
+
 	sourceBalanceString := strconv.FormatFloat(sourceBalance, 'f', -1, 64)
 	destinationBalanceString := strconv.FormatFloat(destinationBalance, 'f', -1, 64)
+
+	logger.Infof("~~ sourceBalanceString: %v ~~", sourceBalanceString)
+	logger.Infof("~~ destinationBalanceString: %v ~~", destinationBalanceString)
 
 	// store balances to accounts, accounts to mtos
 	mtos[sourceIndex].Accounts[sourceAccountIndex].Balance = sourceBalanceString
 	mtos[destinationIndex].Accounts[destinationAccountIndex].Balance = destinationBalanceString
+
+	logger.Infof("~~ new mtos: %v ~~", mtos)
 
 	// store mtos back in KVS
 	mtosAsBytes, _ = json.Marshal(mtos)
@@ -314,13 +343,16 @@ func (t *SimpleChaincode) transfer(stub shim.ChaincodeStubInterface, args []stri
 	err = stub.PutState(mtoIndexString, mtosAsBytes)
 
 	if err != nil {
+		logger.Infof("~~ error putting state back ~~")
 		return nil, err
 	}
+
+	logger.Infof("~~ put state back succes!")
 
 	// only reach if success
 	returnBalances := []string{sourceBalanceString, destinationBalanceString}
 
-	logger.Infof("~~ Completing invoking transfer ~~")
+	logger.Infof("~~ Completing invoking transfer, returnBalances: %v", returnBalances)
 
 	return json.Marshal(returnBalances)
 
@@ -330,6 +362,10 @@ func (t *SimpleChaincode) transfer(stub shim.ChaincodeStubInterface, args []stri
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	if function == "mtos" {
 		return t.mtos(stub, args)
+	} else if function == "accounts" {
+		return t.accounts(stub, args)
+	} else if function == "afterTransfer" {
+		return t.afterTransfer(stub, args)
 	} else {
 		bytes, err := query.Query(stub, function, args)
 		if err != nil { logger.Errorf("Error querying %v: %v", function, err) }
@@ -360,6 +396,47 @@ func (t *SimpleChaincode) mtos(stub shim.ChaincodeStubInterface, args []string) 
 
 }
 
+// arg[0] - mtoName
+func (t *SimpleChaincode) accounts(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	
+	var mtos []MTO
+	var err error
+
+	var sourceMTOName = args[0]
+
+	mtosAsBytes, err := stub.GetState(mtoIndexString)
+
+	if err != nil {
+		return nil, errors.New("{\"Error\":\"Failed to get mtos for mtosKeyString.\"}")
+	}
+
+	json.Unmarshal(mtosAsBytes, &mtos)
+
+	index := -1
+	for i := 0; i < len(mtos); i++ {
+
+		if mtos[i].Name == sourceMTOName {
+			logger.Infof("~~ found index at %v ~~", i)
+			index = i
+		}
+
+	}
+
+	if index == -1 {
+		logger.Infof("~~ Did not find MTO to create account for in mtos. ~~")
+		return nil, errors.New("{\"Error\":\"Did not find MTO to create account for in mtos.\"}")
+	}
+
+	return json.Marshal(mtos[index])
+
+}
+
+// remove if can detect errors from invokes
+func (t *SimpleChaincode) afterTransfer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+
+	return stub.GetState(mtoIndexString)
+
+}
 
 // Main - starts up the chaincode
 func main() {

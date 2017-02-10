@@ -1,12 +1,12 @@
-app.service('LoginService', ["$http", "$q", function($http, $q) {
+app.service('CreateService', ["$http", "$q", function($http, $q) {
   return {
-    authorize: function(credentials){
+    create: function(accountDetails){
         var deferred = $q.defer();
         
         $http({
             method: 'POST',
-            url: '/auth/login',
-            data: { username: credentials.userId, password: credentials.password }
+            url: '/api/v1/create',
+            data: { mto: accountDetails.mto, accountFirstName: accountDetails.firstName, accountLastName: accountDetails.lastName, accountNumber: accountDetails.accountNumber, balance: accountDetails.balance  }
         }).then(function success(response) {
             deferred.resolve(response.data);
 

@@ -1,81 +1,58 @@
 <header-bar>Header Bar Here</header-bar>
 
 <!-- old code -->
-<div class="master-overview">
+<!-- <div class="master-overview">
     <div ng-repeat="thing in master.things" ng-click="master.openThing(thing.id)">
         {{thing.id}} - {{thing.description}}
     </div> 
-</div>
-
-<div id="main">
-	
-
-
-</div>
-
-<!-- accounts - create -->
-<label class="control-label">Accounts</label>
-<div class="form-accountsCreate">
-     <form ng-submit="master.accounts_create()">
-         <!-- <label for="userName" class="control-label">Accounts</label> -->
-
-         <!-- <div class="form-group" data-ng-class="{'has-warning has-feedback': login.invalidCredentials}">
-             <input type="text" id="userName" class="form-control" ng-model="credentials.userId"/>   
-             <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="login.invalidCredentials"></span>
-          </div>
-          <label for="inputPassword" class="control-label">Password</label>
-          <div class="form-group" data-ng-class="{'has-warning has-feedback': login.invalidCredentials}">
-              <input id="inputPassword" class="form-control" type="password" ng-model="credentials.password">
-              <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="login.invalidCredentials"></span>
-              <span class="help-block" data-ng-show="login.invalidCredentials">User ID and/or Password incorrect</span>
-          </div> -->
-
-          <button type="submit" id="login-button" class="btn btn-primary btn-md" ng-click="accounts_create();">
-               Create
-          </button>
-     </form>
-</div>
-
-<!-- accounts - add/remove -->
-<div class="form-accountsAddRemove">
-     <form ng-submit="master.accounts_addremove()">
-         <!-- <label for="userName" class="control-label">User ID</label>
-         <div class="form-group" data-ng-class="{'has-warning has-feedback': login.invalidCredentials}">
-             <input type="text" id="userName" class="form-control" ng-model="credentials.userId"/>   
-             <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="login.invalidCredentials"></span>
-          </div>
-          <label for="inputPassword" class="control-label">Password</label>
-          <div class="form-group" data-ng-class="{'has-warning has-feedback': login.invalidCredentials}">
-              <input id="inputPassword" class="form-control" type="password" ng-model="credentials.password">
-              <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="login.invalidCredentials"></span>
-              <span class="help-block" data-ng-show="login.invalidCredentials">User ID and/or Password incorrect</span>
-          </div> -->
-          <button type="submit" id="login-button" class="btn btn-primary btn-md">
-              Add or Remove Balances 
-          </button>
-     </form>
-</div>
+</div> -->
 
 <!-- transfer -->
 <label class="control-label">Transfers</label>
-<div class="form-transfer">
-     <form ng-submit="master.transfer()">
-         <!-- <label for="userName" class="control-label">User ID</label>
-         <div class="form-group" data-ng-class="{'has-warning has-feedback': login.invalidCredentials}">
-             <input type="text" id="userName" class="form-control" ng-model="credentials.userId"/>   
-             <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="login.invalidCredentials"></span>
-          </div>
-          <label for="inputPassword" class="control-label">Password</label>
-          <div class="form-group" data-ng-class="{'has-warning has-feedback': login.invalidCredentials}">
-              <input id="inputPassword" class="form-control" type="password" ng-model="credentials.password">
-              <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="login.invalidCredentials"></span>
-              <span class="help-block" data-ng-show="login.invalidCredentials">User ID and/or Password incorrect</span>
-          </div> -->
-          <button type="submit" id="login-button" class="btn btn-primary btn-md">
-              Transfer 
-          </button>
-     </form>
-</div>
+<div id="main">
 
+  <br/>
+
+  <div class="row">
+
+            <div class="form-create">
+
+               <form ng-submit="create.create(accountDetails)">
+
+                  <!-- source account # -->
+                    <label for="sourceAccountNumber" class="control-label">Source Account #</label>
+                    <div class="form-group" data-ng-class="{'has-warning has-feedback': transferCtrl.invalidTransfer}">
+                        <input type="text" id="sourceAccountNumber" class="form-control" ng-model="transferDetails.sourceAccountNumber"/>   
+                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="transferCtrl.invalidTransfer"></span>
+                    </div>
+
+                    <!-- destination account # -->
+        <label for="destinationAccountNumber" class="control-label">Destination Account #</label>
+                    <div class="form-group" data-ng-class="{'has-warning has-feedback': transferCtrl.invalidTransfer}">
+                        <input type="text" id="destinationAccountNumber" class="form-control" ng-model="transferDetails.destinationAccountNumber"/>   
+                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="transferCtrl.invalidTransfer"></span>
+                    </div>
+
+                    <!-- amount -->
+                    <label for="amount" class="control-label">Amount ($,USD)</label>
+                    <div class="form-group" data-ng-class="{'has-warning has-feedback': transferCtrl.invalidCredentials}">
+                        <input id="amount" class="form-control" type="amount" ng-model="transferDetails.amount">
+                        <span class="glyphicon glyphicon-warning-sign form-control-feedback" data-ng-show="transferCtrl.invalidTransfer"></span>
+                        <span class="help-block" data-ng-show="transferCtrl.invalidTransfer">Invalid Transfer - Account Number Mismatch or Insufficient Balance</span>
+                    </div>
+                    
+                    <button type="submit" id="login-button" class="btn btn-primary btn-md">
+                        Send Money
+                    </button>
+
+               </form>
+
+            </div>
+
+        <spinner data-ng-show="login.showAuthenticatingSpinner"></spinner>
+
+    </div>
+
+</div>
 
 <footer-bar></footer-bar>

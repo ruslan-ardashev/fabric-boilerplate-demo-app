@@ -276,13 +276,16 @@ exports.invoke = function (fcn, args, enrollmentId, cb) {
 
         tx.on("submitted", function(results) {
             logger.debug("[SDK] "+ enrollmentId +" submitted invoke function "+ fcn, args[0]);
+            logger.debug(results);
         });
         tx.on("complete", function(results) {
             logger.debug("[SDK] "+ enrollmentId +" completed invoke function "+ fcn, args[0]);
+            logger.debug(results);
             cb(null, results);
         });
         tx.on("error", function(err) {
             logger.error("[SDK] error on invoke:",err);
+            logger.debug(results);
             cb(err);
         });
     });
